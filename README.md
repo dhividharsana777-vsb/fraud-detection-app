@@ -57,7 +57,6 @@ Fraud / Normal Prediction
 Bank-Fraud-Detection/
 │
 ├── app.py
-├── model.pkl
 ├── requirements.txt
 │
 └── templates/
