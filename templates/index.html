@@ -2,50 +2,61 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fraud Detection App</title>
-  <link rel="stylesheet" href="style.css">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- tsParticles CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
+  <style>
+    /* Make particles fill the background */
+    #tsparticles {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      top: 0;
+      left: 0;
+    }
+  </style>
 </head>
-<body>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen">
+  <!-- Particle Background -->
+  <div id="tsparticles"></div>
 
-<!-- NAVBAR -->
-<nav>
-  <h2>⚡ FraudAI</h2>
-  <ul>
-    <li>Home</li>
-    <li>Dashboard</li>
-    <li>Login</li>
-  </ul>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <h1>Detect Fraud Instantly 🚀</h1>
-  <p>AI-powered system to identify fraudulent transactions</p>
-  <button>Get Started</button>
-</section>
-
-<!-- DASHBOARD -->
-<section class="dashboard">
-  <div class="card">
-    <h3>Total Transactions</h3>
-    <p>12,340</p>
+  <!-- App Container -->
+  <div class="bg-gray-800 bg-opacity-80 rounded-xl shadow-2xl p-10 max-w-lg text-center">
+    <h1 class="text-4xl font-bold mb-6 text-indigo-400">Fraud Detection App</h1>
+    <p class="text-lg mb-6">Real-time fraud detection powered by AI.</p>
+    <button class="px-6 py-3 bg-indigo-500 hover:bg-indigo-600 rounded-lg text-white font-semibold transition">
+      Run Detection
+    </button>
   </div>
-  <div class="card">
-    <h3>Fraud Detected</h3>
-    <p>320</p>
-  </div>
-  <div class="card">
-    <h3>Accuracy</h3>
-    <p>98.7%</p>
-  </div>
-</section>
 
-<!-- FEED / CARDS -->
-<section class="feed">
-  <div class="box">💳 Transaction #1 - Safe</div>
-  <div class="box">⚠ Transaction #2 - Fraud</div>
-  <div class="box">💳 Transaction #3 - Safe</div>
-</section>
-
+  <!-- Particle Config -->
+  <script>
+    tsParticles.load("tsparticles", {
+      background: { color: "transparent" },
+      particles: {
+        number: { value: 80 },
+        color: { value: "#65d6ce" },
+        shape: { type: "circle" },
+        opacity: { value: 0.5 },
+        size: { value: 3 },
+        move: { enable: true, speed: 2, direction: "none", random: false, straight: false, outModes: "out" },
+        links: { enable: true, color: "#65d6ce", distance: 150, opacity: 0.4, width: 1 }
+      },
+      interactivity: {
+        events: {
+          onHover: { enable: true, mode: "repulse" },
+          onClick: { enable: true, mode: "push" }
+        },
+        modes: {
+          repulse: { distance: 100 },
+          push: { quantity: 4 }
+        }
+      }
+    });
+  </script>
 </body>
 </html>
