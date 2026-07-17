@@ -38,8 +38,16 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden p-4">
-      {/* Animated Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#0f172a] via-[#1e3a5f] to-[#0d9488] animate-gradient-shift"></div>
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: 'url(https://images.unsplash.com/photo-1523961131990-5ea7c61b2107?auto=format&fit=crop&w=1920&q=80)'
+        }}
+      ></div>
+      
+      {/* Overlay with gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#0f172a]/85 via-[#1e3a5f]/80 to-[#0d9488]/75 animate-gradient-shift"></div>
       
       {/* Animated Circles */}
       <div className="absolute top-10 right-20 w-80 h-80 bg-teal-400/20 rounded-full blur-3xl animate-float"></div>
