@@ -35,6 +35,7 @@ const Dashboard = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [showAddTransaction, setShowAddTransaction] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [newTransaction, setNewTransaction] = useState({
     merchant: '',
     amount: '',
@@ -50,6 +51,12 @@ const Dashboard = () => {
     } else {
       setTimeout(() => setIsLoaded(true), 100);
     }
+
+    const handleMouseMove = (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [navigate]);
 
   const handleLogout = () => {
@@ -173,35 +180,82 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 relative overflow-hidden">
+      {/* Animated Background Cyber Elements */}
+      <div className="absolute inset-0 opacity-5">
+        {[...Array(15)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute text-blue-600 text-xs font-mono animate-fall"
+            style={{
+              left: `${i * 6}%`,
+              animationDelay: `${i * 0.4}s`,
+              animationDuration: `${8 + i * 0.6}s`
+            }}
+          >
+            {Array.from({ length: 15 }, () => 
+              ['0', '1', 'X'][Math.floor(Math.random() * 3)]
+            ).join('')}
+          </div>
+        ))}
+      </div>
+
+      {/* Animated Particles */}
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(10)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1.5 h-1.5 bg-cyan-400/20 rounded-full animate-float"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${i * 0.6}s`,
+              animationDuration: `${10 + i}s`
+            }}
+          ></div>
+        ))}
+      </div>
+
       {/* Animated Background Elements */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-blue-200/30 to-cyan-200/30 rounded-full blur-3xl animate-float"></div>
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-purple-200/20 to-pink-200/20 rounded-full blur-3xl animate-float-delayed"></div>
+      <div 
+        className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-blue-200/20 to-cyan-200/20 rounded-full blur-3xl animate-float"
+        style={{
+          transform: `translate(${mousePosition.x * 0.02}px, ${mousePosition.y * 0.02}px)`
+        }}
+      ></div>
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-purple-200/15 to-pink-200/15 rounded-full blur-3xl animate-float-delayed"></div>
       
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-xl border-b border-slate-200/50 shadow-lg relative z-10 animate-fade-in">
+      <header className="bg-white/90 backdrop-blur-xl border-b border-slate-200/50 shadow-lg relative z-10 animate-fade-in">
+        {/* Scanning line effect */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent animate-scan"></div>
+        </div>
+        
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4 animate-slide-in-right">
-              <div className="bg-gradient-to-br from-cyan-500 via-blue-600 to-purple-600 p-3 rounded-2xl shadow-lg hover:scale-110 transition-transform duration-300 animate-bounce-subtle">
+              <div className="bg-gradient-to-br from-cyan-500 via-blue-600 to-purple-600 p-3 rounded-2xl shadow-lg hover:scale-110 transition-transform duration-300 animate-bounce-subtle relative">
                 <Shield className="w-7 h-7 text-white" />
+                <div className="absolute inset-0 rounded-2xl bg-cyan-400/30 animate-ping"></div>
               </div>
               <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">Fraud Detection</h1>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent animate-text-glow">Fraud Detection</h1>
                 <p className="text-sm text-slate-600 flex items-center space-x-1">
-                  <Activity className="w-3 h-3 animate-pulse" />
+                  <Activity className="w-3 h-3 animate-pulse text-green-500" />
                   <span>Real-time Transaction Monitoring</span>
+                  <span className="inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                 </p>
               </div>
             </div>
             <div className="flex items-center space-x-4 animate-fade-in">
-              <div className="hidden md:flex items-center space-x-2 bg-gradient-to-r from-blue-50 to-cyan-50 px-4 py-2 rounded-xl">
+              <div className="hidden md:flex items-center space-x-2 bg-gradient-to-r from-blue-50 to-cyan-50 px-4 py-2 rounded-xl border border-blue-200/50 hover:scale-105 transition-transform duration-200">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                 <span className="text-sm text-slate-600">Welcome, <span className="font-bold text-slate-900">{username}</span></span>
               </div>
               <Button 
                 onClick={handleLogout}
                 variant="outline"
-                className="flex items-center space-x-2 hover:bg-red-50 hover:border-red-300 hover:text-red-600 transition-all duration-200"
+                className="flex items-center space-x-2 hover:bg-red-50 hover:border-red-300 hover:text-red-600 transition-all duration-200 hover:scale-105"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Logout</span>
@@ -284,11 +338,12 @@ const Dashboard = () => {
         <div className="mb-8 animate-fade-in">
           <Button
             onClick={() => setShowAddTransaction(true)}
-            className="w-full sm:w-auto bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold py-6 px-8 rounded-xl shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 flex items-center justify-center space-x-3"
+            className="w-full sm:w-auto bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold py-6 px-8 rounded-xl shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 flex items-center justify-center space-x-3 relative overflow-hidden group"
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
             <span>Analyze New Transaction</span>
             <Sparkles className="w-5 h-5 animate-pulse" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
           </Button>
         </div>
 
