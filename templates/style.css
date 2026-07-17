@@ -1,63 +1,65 @@
 body {
-  font-family: Arial;
   margin: 0;
-  background: #f4f4f4;
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+}
+
+.container {
+  display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  height: 100vh;
+  background: #1e293b;
+  padding: 20px;
+}
+
+.sidebar h2 {
+  margin-bottom: 20px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 10px;
+  margin: 10px 0;
+  background: #334155;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Main */
+.main {
+  flex: 1;
+  padding: 20px;
 }
 
 header {
-  background: #333;
-  color: white;
-  padding: 15px;
-  text-align: center;
+  margin-bottom: 20px;
 }
 
-nav {
-  background: #555;
-  padding: 10px;
-  text-align: center;
-}
-
-nav a {
-  color: white;
-  margin: 10px;
-  text-decoration: none;
-}
-
-.hero {
-  text-align: center;
-  padding: 40px;
-  background: #007BFF;
-  color: white;
-}
-
-.dashboard {
+/* Cards */
+.cards {
   display: flex;
-  justify-content: space-around;
-  padding: 20px;
+  gap: 20px;
 }
 
 .card {
-  background: white;
+  flex: 1;
+  background: #1e293b;
   padding: 20px;
-  width: 150px;
-  text-align: center;
   border-radius: 10px;
-  box-shadow: 0 0 10px #ccc;
-}
-
-.gallery {
   text-align: center;
-  padding: 20px;
 }
 
+/* Gallery */
 .gallery img {
   margin: 10px;
   border-radius: 10px;
-}
-
-footer {
-  text-align: center;
-  padding: 10px;
-  background: #333;
-  color: white;
 }
