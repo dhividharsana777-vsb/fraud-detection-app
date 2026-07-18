@@ -480,6 +480,163 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
+        {/* Add Transaction Modal */}
+        {showAddTransaction && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fade-in" onClick={() => setShowAddTransaction(false)}>
+            <Card className="w-full max-w-2xl border-0 shadow-2xl animate-scale-in bg-white" onClick={(e) => e.stopPropagation()}>
+              <CardHeader className="border-b border-slate-200 bg-gradient-to-r from-cyan-50 to-blue-50">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-2 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg">
+                      <Sparkles className="w-6 h-6 text-white" />
+                    </div>
+                    <CardTitle className="text-xl font-bold">Analyze Transaction for Fraud</CardTitle>
+                  </div>
+                  <button
+                    onClick={() => setShowAddTransaction(false)}
+                    className="text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-2 rounded-full transition-all duration-200"
+                  >
+                    <XCircle className="w-6 h-6" />
+                  </button>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <form onSubmit={handleAddTransaction} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2 md:col-span-2">
+                      <label className="text-sm font-bold text-slate-700 flex items-center space-x-2">
+                        <Store className="w-4 h-4" />
+                        <span>Merchant Name *</span>
+                      </label>
+                      <Input
+                        type="text"
+                        placeholder="e.g., Amazon, Starbucks, Wire Transfer"
+                        value={newTransaction.merchant}
+                        onChange={(e) => setNewTransaction({ ...newTransaction, merchant: e.target.value })}
+                        required
+                        className="h-12 border-slate-300 focus:border-cyan-500 focus:ring-cyan-500"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-slate-700 flex items-center space-x-2">
+                        <DollarSign className="w-4 h-4" />
+                        <span>Amount *</span>
+                      </label>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        placeholder="0.00"
+                        value={newTransaction.amount}
+                        onChange={(e) => setNewTransaction({ ...newTransaction, amount: e.target.value })}
+                        required
+                        className="h-12 border-slate-300 focus:border-cyan-500 focus:ring-cyan-500"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-slate-700 flex items-center space-x-2">
+                        <CreditCard className="w-4 h-4" />
+                        <span>Card Last 4 Digits *</span>
+                      </label>
+                      <Input
+                        type="text"
+                        maxLength="4"
+                        placeholder="1234"
+                        value={newTransaction.cardLast4}
+                        onChange={(e) => setNewTransaction({ ...newTransaction, cardLast4: e.target.value.replace(/\D/g, '') })}
+                        required
+                        className="h-12 border-slate-300 focus:border-cyan-500 focus:ring-cyan-500"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-slate-700 flex items-center space-x-2">
+                        <MapPin className="w-4 h-4" />
+                        <span>Location *</span>
+                      </label>
+                      <Input
+                        type="text"
+                        placeholder="e.g., New York, NY or Moscow, Russia"
+                        value={newTransaction.location}
+                        onChange={(e) => setNewTransaction({ ...newTransaction, location: e.target.value })}
+                        required
+                        className="h-12 border-slate-300 focus:border-cyan-500 focus:ring-cyan-500"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-slate-700 flex items-center space-x-2">
+                        <Filter className="w-4 h-4" />
+                        <span>Category *</span>
+                      </label>
+                      <select
+                        value={newTransaction.category}
+                        onChange={(e) => setNewTransaction({ ...newTransaction, category: e.target.value })}
+                        required
+                        className="w-full h-12 border border-slate-300 rounded-md px-4 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                      >
+                        <option value="Shopping">Shopping</option>
+                        <option value="Food & Dining">Food & Dining</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Transportation">Transportation</option>
+                        <option value="Wire Transfer">Wire Transfer</option>
+                        <option value="Cryptocurrency">Cryptocurrency</option>
+                        <option value="Luxury Goods">Luxury Goods</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-cyan-50 to-blue-50 border-2 border-cyan-200 rounded-xl p-4">
+                    <div className="flex items-start space-x-3">
+                      <Shield className="w-5 h-5 text-cyan-600 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-bold text-slate-900">AI-Powered Fraud Detection</p>
+                        <p className="text-xs text-slate-600 mt-1">
+                          Our system will analyze this transaction for suspicious patterns, unusual amounts, high-risk locations, and merchant categories to calculate a real-time fraud risk score.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end space-x-3 pt-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowAddTransaction(false)}
+                      disabled={isAnalyzing}
+                      className="hover:bg-slate-100"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      disabled={isAnalyzing}
+                      className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold px-8 hover:scale-105 transition-all duration-200"
+                    >
+                      {isAnalyzing ? (
+                        <span className="flex items-center space-x-2">
+                          <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          <span>Analyzing...</span>
+                        </span>
+                      ) : (
+                        <span className="flex items-center space-x-2">
+                          <Sparkles className="w-5 h-5" />
+                          <span>Analyze Transaction</span>
+                        </span>
+                      )}
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
         {/* Transaction Detail Modal */}
         {selectedTransaction && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fade-in" onClick={() => setSelectedTransaction(null)}>
