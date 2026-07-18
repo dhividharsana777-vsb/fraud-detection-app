@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
-import { mockTransactions, mockStats, mockAlerts } from '../mockData';
+import { mockTransactions, mockStats, mockAlerts, USD_TO_INR, formatDualCurrency } from '../mockData';
 import { toast } from '../hooks/use-toast';
 import { 
   AlertCircle, 
@@ -41,7 +41,8 @@ const Dashboard = () => {
     amount: '',
     location: '',
     cardLast4: '',
-    category: 'Shopping'
+    category: 'Shopping',
+    currency: 'USD'
   });
 
   useEffect(() => {
@@ -142,16 +143,23 @@ const Dashboard = () => {
     setIsAnalyzing(true);
 
     setTimeout(() => {
-      const analysis = analyzeTransaction(newTransaction);
+      // Convert amount to USD if INR is selected
+      let amountInUSD = parseFloat(newTransaction.amount);
+      if (newTransaction.currency === 'INR') {
+        amountInUSD = amountInUSD / USD_TO_INR;
+      }
+
+      const analysis = analyzeTransaction({ ...newTransaction, amount: amountInUSD });
       
       const transaction = {
         id: `TXN${String(transactions.length + 1).padStart(3, '0')}`,
         merchant: newTransaction.merchant,
-        amount: parseFloat(newTransaction.amount),
+        amount: amountInUSD,
         location: newTransaction.location,
         cardLast4: newTransaction.cardLast4,
         category: newTransaction.category,
         timestamp: new Date().toISOString(),
+        currency: newTransaction.currency,
         ...analysis
       };
 
@@ -168,8 +176,14 @@ const Dashboard = () => {
         amount: '',
         location: '',
         cardLast4: '',
-        category: 'Shopping'
+        category: 'Shopping',
+        currency: 'USD'
       });
+
+      const currencySymbol = newTransaction.currency === 'USD' ? '$' : '₹';
+      const displayAmount = newTransaction.currency === 'USD' 
+        ? amountInUSD.toFixed(2) 
+        : (amountInUSD * USD_TO_INR).toFixed(2);
 
       toast({
         title: "Transaction Analyzed",
@@ -329,7 +343,8 @@ const Dashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="text-4xl font-bold text-green-600">${mockStats.fraudPrevented.toLocaleString()}</div>
-              <p className="text-xs text-slate-600 mt-2">Potential loss saved</p>
+              <p className="text-xs text-green-700 font-semibold mt-1">₹{(mockStats.fraudPrevented * USD_TO_INR).toLocaleString('en-IN')}</p>
+              <p className="text-xs text-slate-600 mt-1">Potential loss saved</p>
             </CardContent>
           </Card>
         </div>
@@ -428,7 +443,7 @@ const Dashboard = () => {
                   <tr className="text-left">
                     <th className="pb-4 pt-2 px-4 text-sm font-bold text-slate-700">Transaction ID</th>
                     <th className="pb-4 pt-2 px-4 text-sm font-bold text-slate-700">Merchant</th>
-                    <th className="pb-4 pt-2 px-4 text-sm font-bold text-slate-700">Amount</th>
+                    <th className="pb-4 pt-2 px-4 text-sm font-bold text-slate-700">Amount (USD / INR)</th>
                     <th className="pb-4 pt-2 px-4 text-sm font-bold text-slate-700">Location</th>
                     <th className="pb-4 pt-2 px-4 text-sm font-bold text-slate-700">Risk Score</th>
                     <th className="pb-4 pt-2 px-4 text-sm font-bold text-slate-700">Status</th>
@@ -444,7 +459,12 @@ const Dashboard = () => {
                     >
                       <td className="py-4 px-4 text-sm font-mono font-medium text-slate-900">{txn.id}</td>
                       <td className="py-4 px-4 text-sm text-slate-700 font-medium">{txn.merchant}</td>
-                      <td className="py-4 px-4 text-sm font-bold text-slate-900">${txn.amount.toLocaleString()}</td>
+                      <td className="py-4 px-4">
+                        <div className="flex flex-col">
+                          <span className="text-sm font-bold text-slate-900">${txn.amount.toLocaleString()}</span>
+                          <span className="text-xs text-green-700 font-semibold">₹{(txn.amount * USD_TO_INR).toLocaleString('en-IN')}</span>
+                        </div>
+                      </td>
                       <td className="py-4 px-4 text-sm text-slate-600 flex items-center space-x-1">
                         <MapPin className="w-3 h-3" />
                         <span>{txn.location}</span>
@@ -523,15 +543,33 @@ const Dashboard = () => {
                         <DollarSign className="w-4 h-4" />
                         <span>Amount *</span>
                       </label>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        placeholder="0.00"
-                        value={newTransaction.amount}
-                        onChange={(e) => setNewTransaction({ ...newTransaction, amount: e.target.value })}
-                        required
-                        className="h-12 border-slate-300 focus:border-cyan-500 focus:ring-cyan-500"
-                      />
+                      <div className="flex space-x-2">
+                        <Input
+                          type="number"
+                          step="0.01"
+                          placeholder="0.00"
+                          value={newTransaction.amount}
+                          onChange={(e) => setNewTransaction({ ...newTransaction, amount: e.target.value })}
+                          required
+                          className="h-12 border-slate-300 focus:border-cyan-500 focus:ring-cyan-500 flex-1"
+                        />
+                        <select
+                          value={newTransaction.currency}
+                          onChange={(e) => setNewTransaction({ ...newTransaction, currency: e.target.value })}
+                          className="h-12 border border-slate-300 rounded-md px-4 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 bg-white"
+                        >
+                          <option value="USD">USD ($)</option>
+                          <option value="INR">INR (₹)</option>
+                        </select>
+                      </div>
+                      {newTransaction.amount && (
+                        <p className="text-xs text-slate-600 mt-1">
+                          {newTransaction.currency === 'USD' 
+                            ? `≈ ₹${(parseFloat(newTransaction.amount) * USD_TO_INR).toLocaleString('en-IN')}` 
+                            : `≈ $${(parseFloat(newTransaction.amount) / USD_TO_INR).toLocaleString('en-US')}`
+                          }
+                        </p>
+                      )}
                     </div>
 
                     <div className="space-y-2">
@@ -660,7 +698,10 @@ const Dashboard = () => {
                   </div>
                   <div className="space-y-1">
                     <label className="text-sm font-bold text-slate-600">Amount</label>
-                    <p className="text-base text-slate-900 font-bold bg-green-50 px-3 py-2 rounded-lg">${selectedTransaction.amount.toLocaleString()}</p>
+                    <div className="bg-green-50 px-3 py-2 rounded-lg">
+                      <p className="text-base text-slate-900 font-bold">${selectedTransaction.amount.toLocaleString()}</p>
+                      <p className="text-sm text-green-700 font-semibold">₹{(selectedTransaction.amount * USD_TO_INR).toLocaleString('en-IN')}</p>
+                    </div>
                   </div>
                   <div className="space-y-1">
                     <label className="text-sm font-bold text-slate-600">Merchant</label>

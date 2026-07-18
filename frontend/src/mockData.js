@@ -133,6 +133,20 @@ export const mockStats = {
   fraudPrevented: 234500.00
 };
 
+// Currency conversion rate (1 USD = 83 INR approximately)
+export const USD_TO_INR = 83;
+
+// Helper function to format currency in both USD and INR
+export const formatDualCurrency = (usdAmount) => {
+  const inrAmount = usdAmount * USD_TO_INR;
+  return {
+    usd: `$${usdAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+    inr: `₹${inrAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+    usdValue: usdAmount,
+    inrValue: inrAmount
+  };
+};
+
 export const mockAlerts = [
   {
     id: "ALT001",

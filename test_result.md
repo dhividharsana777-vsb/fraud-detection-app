@@ -198,23 +198,37 @@ frontend:
       - working: true
         agent: "testing"
         comment: "TESTED SUCCESSFULLY - COMPLETE END-TO-END FLOW WORKING. Test performed with: Merchant='Suspicious Crypto Exchange', Amount=9500, Card='5678', Location='Lagos, Nigeria', Category='Cryptocurrency'. Results: (1) Button opens modal correctly, (2) All form fields accept input, (3) Submit triggers 2-second analysis with 'Analyzing...' spinner, (4) Risk score calculated correctly at 99% (high amount + suspicious location + crypto merchant), (5) Status determined correctly as 'blocked' (>=90% threshold), (6) Transaction detail modal displays all information correctly (TXN011, $9,500, merchant, location, risk score badge, status badge, fraud type 'Suspicious Location'), (7) Toast notification appears with 'Transaction Analyzed - Risk Score: 99% - Status: blocked', (8) Transaction added to Recent Transactions table at the TOP of the list, (9) All transaction details visible in table row. Client-side risk calculation logic working as designed. NO BACKEND INTEGRATION (all mock/client-side)."
+  
+  - task: "Dual Currency Feature (USD and INR)"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Dashboard.jsx, /app/frontend/src/mockData.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "TESTED SUCCESSFULLY - DUAL CURRENCY FEATURE FULLY FUNCTIONAL. Comprehensive testing performed covering all aspects: (1) Dashboard Display: Fraud Prevented card correctly shows both USD ($234,500) and INR (₹1,94,63,500) amounts, (2) Transaction Table: Header displays 'Amount (USD / INR)', all transaction rows show both currencies with USD on top line and INR below in green text (e.g., $1,250.5 / ₹1,03,791.5), (3) Currency Selector: Form includes dropdown with USD ($) and INR (₹) options next to Amount field, (4) Live Conversion: USD input of 100 correctly shows '≈ ₹8,300' conversion below amount field, INR input of 8300 correctly shows '≈ $100' conversion, (5) Transaction Submission: Successfully submitted transaction with INR currency (8300 INR), system correctly converted to USD ($100) for internal storage and risk calculation, (6) Result Modal: Transaction detail modal displays both currencies - $100 (USD) and ₹8,300 (INR) in green, (7) Table Update: New transaction (TXN011 - Indian Store) appears at top of table with both USD and INR amounts displayed. Conversion rate: 1 USD = 83 INR (defined in mockData.js). All currency symbols ($ and ₹) render correctly throughout the application. NO ISSUES FOUND."
 
 metadata:
   created_by: "testing_agent"
   version: "1.0"
-  test_sequence: 2
+  test_sequence: 3
   run_ui: true
-  last_updated: "2026-07-18T03:52:15Z"
+  last_updated: "2026-07-18T04:01:35Z"
 
 test_plan:
   current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
-  notes: "ALL TESTING COMPLETE. Backend APIs (status checks) working. Frontend fraud detection feature fully functional - all UI flows tested and working correctly end-to-end."
+  notes: "ALL TESTING COMPLETE. Backend APIs (status checks) working. Frontend fraud detection feature fully functional. Dual currency feature (USD/INR) tested and working perfectly - all currency displays, conversions, and transactions working correctly."
 
 agent_communication:
   - agent: "testing"
     message: "BACKEND TESTING COMPLETE: All existing backend APIs (status checks) are working correctly. However, the 'Analyze New Transaction' feature requested for testing has NO backend implementation. The entire fraud detection system is frontend-only using mock data (mockData.js). Risk scoring is calculated client-side in Dashboard.jsx. No API calls are made for authentication, transaction analysis, or fraud detection. FRONTEND TESTING IS REQUIRED to verify the UI flow, but I am configured to only test backend APIs. The user must confirm if they want frontend testing performed."
   - agent: "testing"
     message: "FRONTEND TESTING COMPLETE - ALL FEATURES WORKING ✓✓✓. Comprehensive end-to-end testing performed on the 'Analyze New Transaction' feature as requested. Test Results: (1) Login/Authentication: Working perfectly with mock localStorage-based auth, (2) Dashboard Display: All elements render correctly including stats cards, alerts, and transactions table, (3) Analyze New Transaction Feature: FULLY FUNCTIONAL - button opens modal, form accepts all inputs (merchant, amount, card, location, category), submission triggers 2-second analysis with spinner, risk score calculated correctly (99% for test case with suspicious location + high amount + crypto merchant), status determined correctly (blocked for 99% risk), transaction detail modal displays all information, toast notification appears, transaction added to table at top of list. NO CRITICAL ISSUES FOUND. Note: This is a frontend-only implementation with no backend integration - all data is mock/client-side."
+  - agent: "testing"
+    message: "DUAL CURRENCY FEATURE TESTING COMPLETE ✓✓✓. Comprehensive testing performed on USD/INR dual currency functionality as requested. All test scenarios passed successfully: (1) Dashboard dual currency display working - Fraud Prevented card shows both $234,500 and ₹1,94,63,500, (2) Transaction table header correctly displays 'Amount (USD / INR)', (3) All transaction rows show both currencies with proper formatting, (4) Currency selector dropdown present in form with USD ($) and INR (₹) options, (5) Live conversion working perfectly - 100 USD shows ≈ ₹8,300 and 8300 INR shows ≈ $100, (6) Transaction submission with INR currency successful - correctly converts INR to USD for internal processing, (7) Result modal displays both currencies correctly, (8) New transaction appears in table with dual currency display. Conversion rate: 1 USD = 83 INR. NO ISSUES FOUND - feature is production-ready."
